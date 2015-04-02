@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:yourapp="http://schemas.android.com/apk/res-auto">
+    <item
+        android:title="@string/hint"
+        android:id="@+id/menu_game_hint"
+        android:icon="@drawable/help"
+        yourapp:showAsAction="ifRoom|withText"/>
+    <item
+        android:title="@string/undo"
+        android:id="@+id/menu_game_undo"
+        android:icon="@drawable/undo"
+        yourapp:showAsAction="ifRoom|withText"/>
+    <item
+        android:title="@string/share"
+        android:id="@+id/menu_game_share"
+        yourapp:showAsAction="withText"/>
+</menu>
