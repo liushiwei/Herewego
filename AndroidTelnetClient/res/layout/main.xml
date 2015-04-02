@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:descendantFocusability="beforeDescendants"
+	android:focusableInTouchMode="true"  >
+
+    <EditText
+        android:id="@+id/EditTextCommand"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:ems="10"
+        android:text="HHSir"
+        android:hint="@string/command_hint" >
+    </EditText>
+
+    <EditText
+        android:id="@+id/EditTextIp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/EditTextCommand"
+        android:ems="10"
+        android:hint="@string/ip_hint" />
+
+    <Button
+        android:id="@+id/disconnectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/EditTextIp"
+        android:layout_toRightOf="@+id/connectButton"
+        android:onClick="onClickDisconnect"
+        android:text="@string/disconnect_button_text" />
+
+    <Button
+        android:id="@+id/connectButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/disconnectButton"
+        android:layout_below="@+id/EditTextIp"
+        android:layout_centerHorizontal="true"
+        android:onClick="onClickConnect"
+        android:text="@string/connect_button_text" />
+
+    <Button
+        android:id="@+id/sendButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/connectButton"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/EditTextIp"
+        android:layout_toLeftOf="@+id/connectButton"
+        android:onClick="onClickSend"
+        android:text="@string/send_button_text" />
+
+    <ToggleButton
+        android:id="@+id/powerButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/sendButton"
+        android:layout_below="@+id/sendButton"
+        android:onClick="onClickPower"
+        android:text="ToggleButton"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/inputStreamTextView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/projectorButton"
+        android:background="@drawable/border"
+        android:gravity="bottom"
+        android:padding="15dip"
+        android:scrollbars="vertical"
+        android:text="@string/input_stream_welcome_text" />
+
+    <Button
+        android:id="@+id/volumeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/volumePicker"
+        android:layout_toLeftOf="@+id/disconnectButton"
+        android:onClick="onVolumeChange"
+        android:text="@string/volume_button_text"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/xboxButton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/inputStreamTextView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/projectorButton"
+        android:layout_toLeftOf="@+id/radioPButton"
+        android:onClick="onClickXbox"
+        android:text="@string/xbox_button_text" 
+        android:visibility="gone"/>
+
+    <Button
+        android:id="@+id/stopButton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/xboxButton"
+        android:layout_alignLeft="@+id/volumeButton"
+        android:layout_alignRight="@+id/volumeButton"
+        android:layout_alignTop="@+id/playButton"
+        android:onClick="onClickStop"
+        android:text="@string/stop_button_text"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/playButton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/xboxButton"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/powerButton"
+        android:layout_below="@+id/powerButton"
+        android:onClick="onClickPlay"
+        android:text="@string/play_button_text"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/projectorButton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/volumePicker"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/volumePicker"
+        android:onClick="onClickProjector"
+        android:text="@string/projector_button_text"
+        android:visibility="gone" />
+
+    <NumberPicker
+        android:id="@+id/volumePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/disconnectButton"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/disconnectButton"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/radioPButton"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/xboxButton"
+        android:layout_alignLeft="@+id/stopButton"
+        android:layout_below="@+id/stopButton"
+        android:layout_toLeftOf="@+id/volumePicker"
+        android:onClick="onClickRP"
+        android:text="@string/radio_button_text"
+        android:visibility="gone" />
+
+</RelativeLayout>
