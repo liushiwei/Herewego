@@ -2,12 +2,14 @@
 package com.hhsir.herewego;
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
+import android.app.Service;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.SpannableString;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
@@ -15,19 +17,22 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import com.hhsir.herewego.net.GetResponseAsync;
+import com.hhsir.herewego.net.IGSServerListener;
+import com.hhsir.herewego.net.IGSService;
+import com.hhsir.herewego.net.IGSService.MyIBinder;
+import com.hhsir.herewego.net.Telnet;
 
-public class ConsoleActivity extends Activity {
+import java.util.concurrent.ExecutionException;
+
+public class ConsoleActivity extends Activity implements IGSServerListener {
     private Telnet client = null;
     private Toast fastToast;
     private static int SERVERPORT = 23;
     private static String SERVER_IP = "192.168.0.105";
     private static TextView et;
-    private static TextView server_message;
-    
+    private static EditText server_message;
+    private IGSService mService;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,62 +40,71 @@ public class ConsoleActivity extends Activity {
         fastToast = Toast.makeText(this, "", Toast.LENGTH_SHORT);
         et = (TextView) findViewById(R.id.inputStreamTextView);
         et.setMovementMethod(new ScrollingMovementMethod());
+        server_message= (EditText) findViewById(R.id.server_message);
+        Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/DroidSansMono.ttf");
+        server_message.setTypeface(typeface);
+        startService(new Intent(this,IGSService.class));
+        bindService(new Intent(this,IGSService.class), myLocalServiceConnection, Service.BIND_AUTO_CREATE);
     }
     
     private Handler mHandler  = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
-            addServerMessage(msg.obj.toString());
+            switch(msg.what) {
+                case 0:
+                    SpannableString s = new SpannableString(msg.obj.toString());
+                    addServerMessage(s);
+                    break;
+                case 1:
+                    et.setText(msg.obj.toString());
+                    break;
+                case 2:
+                    fastToast.setText(msg.obj.toString());
+                    fastToast.show();
+                    break;
+            }
             super.handleMessage(msg);
         }
         
     };
 
     public void onClickConnect(View view) {
-        EditText etIp = (EditText) findViewById(R.id.EditTextIp);
-        server_message= (TextView) findViewById(R.id.server_message);
-
-        if (!etIsEmpty(etIp)) {
-            String tmp = etIp.getText().toString();
-
-            if (tmp.contains(":")) {
-                String[] address = tmp.split(":");
-                SERVER_IP = address[0];
-                SERVERPORT = Integer.parseInt(address[1]);
-            }
-            else {
-                SERVER_IP = etIp.getText().toString();
-            }
-
-            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPref.edit();
-            editor.putString("last_server", tmp);
-            editor.commit();
-
-        }
-        else
-            toastFast("Enter a server IP");
-
-        if (client != null && client.isConnected())
-            toastFast("Already connected");
-        else
-            try {
-                client = new Telnet(this, SERVER_IP, SERVERPORT);
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        GetResponseAsync responsetask = new GetResponseAsync("", 1000);
-        try {
-            Log.e("Telnet", responsetask.execute().get());
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+//        EditText etIp = (EditText) findViewById(R.id.EditTextIp);
+//        
+//
+//        if (!etIsEmpty(etIp)) {
+//            String tmp = etIp.getText().toString();
+//
+//            if (tmp.contains(":")) {
+//                String[] address = tmp.split(":");
+//                SERVER_IP = address[0];
+//                SERVERPORT = Integer.parseInt(address[1]);
+//            }
+//            else {
+//                SERVER_IP = etIp.getText().toString();
+//            }
+//
+//            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+//            SharedPreferences.Editor editor = sharedPref.edit();
+//            editor.putString("last_server", tmp);
+//            editor.commit();
+//
+//        }
+//        else
+//            toastFast("Enter a server IP");
+//
+//        if (client != null && client.isConnected())
+//            toastFast("Already connected");
+//        else
+//            try {
+//                client = new Telnet(this, SERVER_IP, SERVERPORT);
+//            } catch (IOException e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//        GetResponseAsync responsetask = new GetResponseAsync(client,"", 1000);
+//        responsetask.execute();
 
         return;
     }
@@ -115,6 +129,17 @@ public class ConsoleActivity extends Activity {
         }
         return;
     }
+    
+    public void onClickLogin(View view) {
+        if(mService!=null){
+            EditText etusername = (EditText) findViewById(R.id.username);
+            EditText etpassword = (EditText) findViewById(R.id.password);
+            if (!etIsEmpty(etusername)&&!etIsEmpty(etpassword)) {
+              mService.login(etusername.getText().toString(), etpassword.getText().toString());
+            }
+            
+        }
+    }
 
     public void onClickSend(View view) {
 
@@ -126,7 +151,7 @@ public class ConsoleActivity extends Activity {
         EditText et = (EditText) findViewById(R.id.EditTextCommand);
 
         // client.sendCommand(et.getText().toString());
-        GetResponseAsync responsetask = new GetResponseAsync(et.getText().toString(), 1000);
+        GetResponseAsync responsetask = new GetResponseAsync(client,et.getText().toString(), 1000);
         try {
             Log.e("Telnet", responsetask.execute().get());
         } catch (InterruptedException e) {
@@ -139,61 +164,62 @@ public class ConsoleActivity extends Activity {
 
     }
 
-    void toastFast(String str) {
-
-        fastToast.setText(str);
-        fastToast.show();
+    public void toastFast(String str) {
+        mHandler.obtainMessage(2, str).sendToTarget();
     }
 
     private boolean etIsEmpty(EditText etText) {
         return etText.getText().toString().trim().length() == 0;
     }
 
-    private class GetResponseAsync extends AsyncTask<Void, Void, String> {
-        final String cmd;
-        final int timeout;
-        GetResponseTask response;
-
-        public GetResponseAsync(String cmd, int timeout) {
-            this.cmd = cmd;
-            this.timeout = timeout;
-            response = client.getResponse(ConsoleActivity.this);
-        }
-
-        protected void onPreExecute() {
-            response.execute(client, cmd);
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-            String result;
-
-            try {
-                result = response.get(timeout, TimeUnit.MILLISECONDS);
-            } catch (InterruptedException | ExecutionException
-                    | TimeoutException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-                return null;
-            }
-            if (result == null) {
-                return "";
-            }
-            mHandler.obtainMessage(0, result).sendToTarget();
-            result = result.replace("\r\n", "");
-            result = result.replace(" ", "");
-
-            return result;
-        }
-
-    }
 
     public void setConsole(String str) {
-        et.setText(str);
+        mHandler.obtainMessage(1, str).sendToTarget();
         return;
     }
-    public void addServerMessage(String message) {
+    public void addServerMessage(SpannableString message) {
         server_message.append(message);
         //server_message.scrollTo(x, y);
     }
+
+    @Override
+    public void serverConnect() {
+        mHandler.obtainMessage(1, "Service connected").sendToTarget();
+        
+    }
+
+    @Override
+    public void serverDisconnect() {
+        mHandler.obtainMessage(1, "Service disconnected").sendToTarget();
+        
+    }
+
+    @Override
+    public void loginSuccess() {
+        mHandler.obtainMessage(1, "Login success").sendToTarget();
+        
+    }
+
+    @Override
+    public void invalidPassword() {
+        mHandler.obtainMessage(1, "Invalid Password").sendToTarget();
+    }
+
+    @Override
+    public void serverMessage(String message) {
+        mHandler.obtainMessage(0, message).sendToTarget();
+    }
+    
+    private ServiceConnection myLocalServiceConnection = new ServiceConnection() {  
+        public void onServiceConnected(android.content.ComponentName name,  
+                android.os.IBinder service) {  
+            MyIBinder myIBinder = (MyIBinder) service;  
+            mService = (IGSService) myIBinder.getService();
+            mService.setIGSListener(ConsoleActivity.this);
+        };  
+  
+        public void onServiceDisconnected(android.content.ComponentName name) {  
+          
+        };  
+    };  
 }

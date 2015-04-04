@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.hhsir.herewego;
+package com.hhsir.herewego.net;
 
 import java.io.IOException;
 import java.io.InputStream;
