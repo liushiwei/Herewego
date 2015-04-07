@@ -1,6 +1,7 @@
 package com.hhsir.herewego.net;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.hhsir.herewego.ConsoleActivity;
 
@@ -11,13 +12,13 @@ import java.util.concurrent.TimeoutException;
 public class GetResponseAsync extends AsyncTask<Void, Void, String> {
     final String cmd;
     final int timeout;
-    GetResponseTask response;
+    final GetResponseTask response;
     final Telnet client;
     public GetResponseAsync(Telnet client,String cmd, int timeout) {
         this.cmd = cmd;
         this.client = client;
         this.timeout = timeout;
-        response = client.getResponse();
+        this.response = client.getResponse();
     }
 
     protected void onPreExecute() {
@@ -30,6 +31,7 @@ public class GetResponseAsync extends AsyncTask<Void, Void, String> {
 
         try {
             result = response.get(timeout, TimeUnit.MILLISECONDS);
+            //Log.e("GetResponseAsync", result);
             client.getMessageHandler().setMessage(result);
         } catch (InterruptedException | ExecutionException
                 | TimeoutException e) {

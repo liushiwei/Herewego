@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.hhsir.herewego.net.Commands;
 import com.hhsir.herewego.net.GetResponseAsync;
 import com.hhsir.herewego.net.IGSServerListener;
 import com.hhsir.herewego.net.IGSService;
@@ -26,7 +27,6 @@ import com.hhsir.herewego.net.Telnet;
 import java.util.concurrent.ExecutionException;
 
 public class ConsoleActivity extends Activity implements IGSServerListener {
-    private Telnet client = null;
     private Toast fastToast;
     private static int SERVERPORT = 23;
     private static String SERVER_IP = "192.168.0.105";
@@ -43,7 +43,7 @@ public class ConsoleActivity extends Activity implements IGSServerListener {
         server_message= (EditText) findViewById(R.id.server_message);
         Typeface typeface = Typeface.createFromAsset(getAssets(),"fonts/DroidSansMono.ttf");
         server_message.setTypeface(typeface);
-        startService(new Intent(this,IGSService.class));
+        //startService(new Intent(this,IGSService.class));
         bindService(new Intent(this,IGSService.class), myLocalServiceConnection, Service.BIND_AUTO_CREATE);
     }
     
@@ -110,14 +110,14 @@ public class ConsoleActivity extends Activity implements IGSServerListener {
     }
 
     private boolean disconnect() {
-        if (client.disconnect()) {
+        if (mService.getTelnet().disconnect()) {
             return true;
         }
         return false;
     }
 
     public void onClickDisconnect(View view) {
-        if (client != null && client.isConnected()) {
+        if (mService.getTelnet() != null && mService.getTelnet().isConnected()) {
             if (disconnect()) {
                 toastFast("Disconnected from server");
             }
@@ -142,24 +142,9 @@ public class ConsoleActivity extends Activity implements IGSServerListener {
     }
 
     public void onClickSend(View view) {
-
-        if (client == null || !client.isConnected()) {
-            toastFast("Not connected to a server");
-            return;
-        }
-
-        EditText et = (EditText) findViewById(R.id.EditTextCommand);
-
-        // client.sendCommand(et.getText().toString());
-        GetResponseAsync responsetask = new GetResponseAsync(client,et.getText().toString(), 1000);
-        try {
-            Log.e("Telnet", responsetask.execute().get());
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        EditText command =  (EditText) findViewById(R.id.EditTextCommand);
+        if(mService!=null){
+            mService.sendCommand(command.getText().toString());
         }
 
     }
@@ -221,5 +206,14 @@ public class ConsoleActivity extends Activity implements IGSServerListener {
         public void onServiceDisconnected(android.content.ComponentName name) {  
           
         };  
-    };  
+    };
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        onClickDisconnect(null);
+        unbindService(myLocalServiceConnection);
+    }  
+    
+    
+    
 }

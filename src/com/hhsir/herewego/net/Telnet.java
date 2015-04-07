@@ -28,36 +28,50 @@ public class Telnet {
     private final String SERVER_IP;
     private final int SERVERPORT;
     private static Telnet singleTelnet;
-    public Telnet(MessageHandler handler,String ip, int port) throws IOException {
-        this.handler =handler; 
+
+    public Telnet(MessageHandler handler, String ip, int port) throws IOException {
+        this.handler = handler;
         SERVER_IP = ip;
         SERVERPORT = port;
+        client = new TelnetClient();
     }
-    
+
     public void setMessageHandler(MessageHandler handler) {
         this.handler = handler;
     }
-    
+
     public static Telnet getTelnet(String ip, int port) throws IOException {
-        if(singleTelnet==null) {
-            return singleTelnet = new Telnet(null,ip,port);
-        }else {
+        if (singleTelnet == null) {
+            return singleTelnet = new Telnet(null, ip, port);
+        } else {
             return singleTelnet;
         }
     }
 
     // TELNET
     public void connectIGSServer() {
-        ConnectTask connection = new ConnectTask();
-        connection.execute();
+//        ConnectTask connection = new ConnectTask();
+//        connection.execute();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    connectToServer();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private void connectToServer() throws IOException {
-        if(client.isConnected()) {
+        if (client.isConnected()) {
             disconnect();
             client = null;
         }
-        client = new TelnetClient();
+        if (client == null)
+            client = new TelnetClient();
 
         if (SERVER_IP == null) {
             handler.toastFast("Enter the server address");
@@ -123,24 +137,26 @@ public class Telnet {
     public BufferedInputStream getStream() {
         return (BufferedInputStream) client.getInputStream();
     }
-    
+
     public Charset getCharset() {
         return client.getCharset();
     }
-    
 
     public boolean isConnected() {
-        return client.isConnected();
+        if (client != null)
+            return client.isConnected();
+        else
+            return false;
     }
 
     // exits telnet session and cleans up the telnet console
     public boolean disconnect() {
 
         try {
-            if(outstream!=null)
-            outstream.close();
-            if(client!=null&&client.isConnected())
-            client.disconnect();
+            if (outstream != null)
+                outstream.close();
+            if (client != null && client.isConnected())
+                client.disconnect();
             client = null;
             outstream = null;
         } catch (IOException e) {
@@ -166,7 +182,7 @@ public class Telnet {
             return null;
         }
     }
-    
+
     public MessageHandler getMessageHandler() {
         return handler;
     }

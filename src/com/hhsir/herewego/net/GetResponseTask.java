@@ -22,11 +22,6 @@ public class GetResponseTask extends AsyncTask<Object, Void, String> {
             Telnet client = (Telnet) params[0];
             BufferedInputStream instr = client.getStream();
             String cmd = (String) params[1];
-            // int len=instr.available();
-            // Log.e("Telnet", "len = "+len);
-
-            // instr.read(buff,0,len);
-            // Log.e("Telnet", "instr.read = "+instr.read(buff,0,len));
             if (cmd != null && cmd.length() > 0)
                 client.sendCommand(cmd);
             publishProgress();
@@ -43,6 +38,7 @@ public class GetResponseTask extends AsyncTask<Object, Void, String> {
             while (len == 0) {
                 try {
                     // Need to implement listener ASAP
+                    Log.e("Telnet", "sleep = " + 300);
                     Thread.sleep(300);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block

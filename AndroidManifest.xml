@@ -22,7 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".IGSService"/>
+        <service android:name="com.hhsir.herewego.net.IGSService"/>
     </application>
     <uses-permission android:name="android.permission.INTERNET"/>
 
