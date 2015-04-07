@@ -50,7 +50,7 @@
             android:layout_weight="1"
             android:ems="10"
             android:hint="USERNAME"
-            android:text="HHSir" >
+            android:text="games" >
         </EditText>
 
         <Button

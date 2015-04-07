@@ -112,6 +112,7 @@ public class IGSService extends Service implements MessageHandler {
                 }else {
                     mListener.loginSuccess();
                     sendCommand(Commands.TOGGLE_CLIENT_TRUE);
+                    sendCommand(Commands.TOGGLE_QUIET_TRUE);
                 }
             }
             
