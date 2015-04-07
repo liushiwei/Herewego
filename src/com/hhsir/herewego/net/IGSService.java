@@ -26,7 +26,7 @@ public class IGSService extends Service implements MessageHandler {
     private final MyIBinder myIBinder = new MyIBinder();  
     private IGSServerListener mListener;
     
-    public static final String END_LINE = new String(new char[]{'\r','\n','1',' ','5'});
+    public static final String END_LINE = new String(new char[]{'\r','\n','1',' ','5','\r','\n'});
     @Override
     public void onCreate() {
         super.onCreate();
@@ -213,11 +213,13 @@ public class IGSService extends Service implements MessageHandler {
                 String result = pwd.execute().get();
                 if(result!=null&&result.length()>0){
                     builder.append(result);
-                    while (!builder.substring(builder.length()-4, builder.length()).endsWith(END_LINE)) {
+                    String end =builder.substring(builder.length()-4, builder.length());
+                    while (!end.endsWith(END_LINE)) {
                         GetResponseAsync get_result = new GetResponseAsync(client,"", 1000);
                         result = get_result.execute().get();
                         if(result!=null&&result.length()>0){
                             builder.append(result);
+                            end =builder.substring(builder.length()-7, builder.length());
                         }else {
                             return null;
                         }

@@ -7,6 +7,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import android.R.integer;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -34,12 +35,16 @@ public class GetResponseTask extends AsyncTask<Object, Void, String> {
             }
 
             int len = instr.available();
-
+            int sleep_time = 0;
             while (len == 0) {
                 try {
                     // Need to implement listener ASAP
                     Log.e("Telnet", "sleep = " + 300);
+                    sleep_time+=300;
                     Thread.sleep(300);
+                    if(sleep_time>2500){
+                        return null;
+                    }
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();

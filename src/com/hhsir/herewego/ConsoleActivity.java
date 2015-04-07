@@ -53,8 +53,10 @@ public class ConsoleActivity extends Activity implements IGSServerListener {
         public void handleMessage(Message msg) {
             switch(msg.what) {
                 case 0:
-                    SpannableString s = new SpannableString(msg.obj.toString());
-                    addServerMessage(s);
+                    if(msg.obj!=null){
+                        SpannableString s = new SpannableString(msg.obj.toString());
+                        addServerMessage(s);
+                    }
                     break;
                 case 1:
                     et.setText(msg.obj.toString());
