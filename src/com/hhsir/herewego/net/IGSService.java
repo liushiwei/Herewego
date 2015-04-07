@@ -1,6 +1,10 @@
 
 package com.hhsir.herewego.net;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
+
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -9,8 +13,7 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.widget.Toast;
 
-import java.io.IOException;
-import java.util.concurrent.ExecutionException;
+import com.hhsir.herewego.igs.Game;
 
 public class IGSService extends Service implements MessageHandler {
     private Telnet client = null;
@@ -22,6 +25,8 @@ public class IGSService extends Service implements MessageHandler {
     private Toast fastToast;
     private final MyIBinder myIBinder = new MyIBinder();  
     private IGSServerListener mListener;
+    
+    public static final String END_LINE = new String(new char[]{'\r','\n','1',' ','5'});
     @Override
     public void onCreate() {
         super.onCreate();
@@ -200,7 +205,40 @@ public class IGSService extends Service implements MessageHandler {
         }
     }
     
-    
+    public List<Game> getGames(){
+        if(client!=null&&client.isConnected()) {
+            GetResponseAsync pwd = new GetResponseAsync(client,Commands.GAMES.getName(), 1000);
+            StringBuilder builder = new StringBuilder();
+            try {
+                String result = pwd.execute().get();
+                if(result!=null&&result.length()>0){
+                    builder.append(result);
+                    while (!builder.substring(builder.length()-4, builder.length()).endsWith(END_LINE)) {
+                        GetResponseAsync get_result = new GetResponseAsync(client,"", 1000);
+                        result = get_result.execute().get();
+                        if(result!=null&&result.length()>0){
+                            builder.append(result);
+                        }else {
+                            return null;
+                        }
+                        
+                    }
+                }
+                result = builder.toString();
+                String games[] = result.split("\r\n");
+                return null;
+            } catch (InterruptedException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return null;
+        }else {
+            return null;
+        }
+    }
     
 
 }

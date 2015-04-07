@@ -70,41 +70,7 @@ public class ConsoleActivity extends Activity implements IGSServerListener {
     };
 
     public void onClickConnect(View view) {
-//        EditText etIp = (EditText) findViewById(R.id.EditTextIp);
-//        
-//
-//        if (!etIsEmpty(etIp)) {
-//            String tmp = etIp.getText().toString();
-//
-//            if (tmp.contains(":")) {
-//                String[] address = tmp.split(":");
-//                SERVER_IP = address[0];
-//                SERVERPORT = Integer.parseInt(address[1]);
-//            }
-//            else {
-//                SERVER_IP = etIp.getText().toString();
-//            }
-//
-//            SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-//            SharedPreferences.Editor editor = sharedPref.edit();
-//            editor.putString("last_server", tmp);
-//            editor.commit();
-//
-//        }
-//        else
-//            toastFast("Enter a server IP");
-//
-//        if (client != null && client.isConnected())
-//            toastFast("Already connected");
-//        else
-//            try {
-//                client = new Telnet(this, SERVER_IP, SERVERPORT);
-//            } catch (IOException e) {
-//                // TODO Auto-generated catch block
-//                e.printStackTrace();
-//            }
-//        GetResponseAsync responsetask = new GetResponseAsync(client,"", 1000);
-//        responsetask.execute();
+
 
         return;
     }
@@ -144,7 +110,7 @@ public class ConsoleActivity extends Activity implements IGSServerListener {
     public void onClickSend(View view) {
         EditText command =  (EditText) findViewById(R.id.EditTextCommand);
         if(mService!=null){
-            mService.sendCommand(command.getText().toString());
+            mService.getGames();
         }
 
     }
