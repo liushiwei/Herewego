@@ -25,8 +25,11 @@ import com.hhsir.herewego.net.IGSService.MyIBinder;
 import com.hhsir.herewego.net.Telnet;
 
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ConsoleActivity extends Activity implements IGSServerListener {
+    private static final String TAG = "ConsoleActivity";
     private Toast fastToast;
     private static int SERVERPORT = 23;
     private static String SERVER_IP = "192.168.0.105";
@@ -45,6 +48,12 @@ public class ConsoleActivity extends Activity implements IGSServerListener {
         server_message.setTypeface(typeface);
         //startService(new Intent(this,IGSService.class));
         bindService(new Intent(this,IGSService.class), myLocalServiceConnection, Service.BIND_AUTO_CREATE);
+        String reg_guest_user = "^\\s*guest[0-9]+.*";
+        Pattern p = Pattern.compile(reg_guest_user);
+        if(p.matches(reg_guest_user, "  guest790                  --        NR    0/   0  79  -   50s    Q- default")) {
+            Log.e(TAG, "user is guest ");
+        }
+           
     }
     
     private Handler mHandler  = new Handler() {
@@ -111,9 +120,16 @@ public class ConsoleActivity extends Activity implements IGSServerListener {
 
     public void onClickSend(View view) {
         EditText command =  (EditText) findViewById(R.id.EditTextCommand);
-        if(mService!=null){
-            mService.getGames();
-        }
+        new Thread(new Runnable() {
+            
+            @Override
+            public void run() {
+                if(mService!=null){
+                    mService.getUsers();
+                }
+            }
+        }).start();
+        
 
     }
 

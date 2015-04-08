@@ -60,7 +60,8 @@ public class GetResponseTask extends AsyncTask<Object, Void, String> {
                 } while (total != len);
 
                 Log.e("Telnet", "ret_read = " + total);
-                String res = new String(buff, 0, total);
+                Log.e("Telnet", "getCharset = " + client.getCharset());
+                String res = new String(buff, 0, total,"Shift_JIS");
                 Log.i("readline", res);
                 return res;
             }
