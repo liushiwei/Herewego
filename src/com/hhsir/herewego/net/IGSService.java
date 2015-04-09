@@ -14,6 +14,7 @@ import com.hhsir.herewego.igs.Game;
 import com.hhsir.herewego.igs.Player;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -29,10 +30,13 @@ public class IGSService extends Service implements MessageHandler {
     private static String USER;
     private static String PWD;
     private Toast fastToast;
-    private final MyIBinder myIBinder = new MyIBinder();  
+    private final MyIBinder myIBinder = new MyIBinder();
     private IGSServerListener mListener;
-    
-    public static final String END_LINE = new String(new char[]{'\r','\n','1',' ','5','\r','\n'});
+
+    public static final String END_LINE = new String(new char[] {
+            '\r', '\n', '1', ' ', '5', '\r', '\n'
+    });
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -42,15 +46,14 @@ public class IGSService extends Service implements MessageHandler {
         SERVERPORT = sharedPref.getInt("Port", SERVERPORT);
         USER = sharedPref.getString("User", "");
         PWD = sharedPref.getString("Pwd", "");
-        
+
     }
-    
-    public class MyIBinder extends Binder {  
-        public Service getService() {  
-            return IGSService.this;  
-        }  
-    }  
-  
+
+    public class MyIBinder extends Binder {
+        public Service getService() {
+            return IGSService.this;
+        }
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -62,29 +65,29 @@ public class IGSService extends Service implements MessageHandler {
         fastToast.setText(str);
         fastToast.show();
     }
-    
+
     public void setIGSListener(IGSServerListener listener) {
         mListener = listener;
     }
 
     @Override
     public void setConsole(String message) {
-        if(isShowConsole&&mListener!=null) {
+        if (isShowConsole && mListener != null) {
             mListener.serverMessage(message);
         }
     }
 
     @Override
     public void serviceConnected() {
-        if(mListener!=null) {
+        if (mListener != null) {
             mListener.serverConnect();
         }
-        GetResponseAsync responsetask = new GetResponseAsync(client,"", 1000);
+        GetResponseAsync responsetask = new GetResponseAsync(client, "", 1000);
         try {
             String result = responsetask.execute().get();
             String results[] = result.split("\n");
             int length = results.length;
-            if(results[length-1].contains("Login")) {
+            if (results[length - 1].contains("Login")) {
                 login();
             }
         } catch (InterruptedException e) {
@@ -93,54 +96,53 @@ public class IGSService extends Service implements MessageHandler {
             e.printStackTrace();
         }
 
-        
     }
 
     @Override
     public void setMessage(String message) {
-        if(mListener!=null) {
+        if (mListener != null) {
             mListener.serverMessage(message);
         }
-        
+
     }
-    
+
     private void login() {
-        GetResponseAsync responsetask = new GetResponseAsync(client,USER, 1000);
+        GetResponseAsync responsetask = new GetResponseAsync(client, USER, 1000);
         try {
             String result = responsetask.execute().get();
             String results[] = result.split("\n");
             int length = results.length;
-            if(results[1].contains("1 1")||results[1].contains("Password")) {
-                GetResponseAsync pwd = new GetResponseAsync(client,PWD, 1000);
+            if (results[1].contains("1 1") || results[1].contains("Password")) {
+                GetResponseAsync pwd = new GetResponseAsync(client, PWD, 1000);
                 String pwd_result = pwd.execute().get();
                 results = pwd_result.split("\n");
                 length = results.length;
-                if(results[length-1].contains("1 0")||results[0].contains("Login")) {
+                if (results[length - 1].contains("1 0") || results[0].contains("Login")) {
                     mListener.invalidPassword();
                     client.disconnect();
-                }else {
+                } else {
                     mListener.loginSuccess();
                     sendCommand(Commands.TOGGLE_CLIENT_TRUE);
                     sendCommand(Commands.TOGGLE_QUIET_TRUE);
                 }
             }
-            
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
         }
     }
-    
-    public void login(String userName,String pwd) {
+
+    public void login(String userName, String pwd) {
         USER = userName;
         PWD = pwd;
         if (client != null && client.isConnected())
             toastFast("Already connected");
         else
             try {
-                client = new Telnet(this,SERVER_IP, SERVERPORT);
-                if(!client.isConnected()) {
+                client = new Telnet(this, SERVER_IP, SERVERPORT);
+                if (!client.isConnected()) {
                     client.connectIGSServer();
                 }
             } catch (IOException e) {
@@ -151,27 +153,26 @@ public class IGSService extends Service implements MessageHandler {
 
     @Override
     public void serviceDisconnected() {
-        if(isShowConsole&&mListener!=null) {
+        if (isShowConsole && mListener != null) {
             mListener.serverDisconnect();
         }
-        
+
     }
-    
+
     public boolean disconnectServer() {
         if (client.disconnect()) {
             return true;
         }
         return false;
     }
-    
+
     public Telnet getTelnet() {
         return client;
     }
-    
-    
+
     public String sendCommand(Commands command) {
-        if(client!=null&&client.isConnected()) {
-            GetResponseAsync pwd = new GetResponseAsync(client,command.getName(), 1000);
+        if (client != null && client.isConnected()) {
+            GetResponseAsync pwd = new GetResponseAsync(client, command.getName(), 1000);
             try {
                 String result = pwd.execute().get();
                 return result;
@@ -181,14 +182,14 @@ public class IGSService extends Service implements MessageHandler {
                 e.printStackTrace();
             }
             return null;
-        }else {
+        } else {
             return null;
         }
     }
-    
+
     public String sendCommand(String command) {
-        if(client!=null&&client.isConnected()) {
-            GetResponseAsync pwd = new GetResponseAsync(client,command, 1000);
+        if (client != null && client.isConnected()) {
+            GetResponseAsync pwd = new GetResponseAsync(client, command, 1000);
             try {
                 String result = pwd.execute().get();
                 return result;
@@ -198,33 +199,33 @@ public class IGSService extends Service implements MessageHandler {
                 e.printStackTrace();
             }
             return null;
-        }else {
+        } else {
             return null;
         }
     }
-    
-    public List<Game> getGames(){
-        if(client!=null&&client.isConnected()) {
-            GetResponseAsync pwd = new GetResponseAsync(client,Commands.GAMES.getName(), 1000);
+
+    public List<Game> getGames() {
+        if (client != null && client.isConnected()) {
+            GetResponseAsync pwd = new GetResponseAsync(client, Commands.GAMES.getName(), 1000);
             StringBuilder builder = new StringBuilder();
             try {
                 String result = pwd.execute().get();
-                if(result!=null&&result.length()>0){
+                if (result != null && result.length() > 0) {
                     builder.append(result);
-                    String end =builder.substring(builder.length()-4, builder.length());
+                    String end = builder.substring(builder.length() - 4, builder.length());
                     while (!end.endsWith(END_LINE)) {
                         // TODO 添加另一种结束符的判断
-                        GetResponseAsync get_result = new GetResponseAsync(client,"", 1000);
+                        GetResponseAsync get_result = new GetResponseAsync(client, "", 1000);
                         result = get_result.execute().get();
-                        if(result!=null&&result.length()>0){
+                        if (result != null && result.length() > 0) {
                             builder.append(result);
-                            end =builder.substring(builder.length()-7, builder.length());
-                        }else {
+                            end = builder.substring(builder.length() - 7, builder.length());
+                        } else {
                             return null;
                         }
-                        
+
                     }
-                    
+
                 }
                 result = builder.toString();
                 String games[] = result.split("\r\n");
@@ -236,25 +237,29 @@ public class IGSService extends Service implements MessageHandler {
                 e.printStackTrace();
             }
             return null;
-        }else {
+        } else {
             return null;
         }
     }
-    
-    private List<Game> parseGamesResult(String[] results){
+
+    private List<Game> parseGamesResult(String[] results) {
         List<Game> games = new ArrayList<Game>();
         String reg_games_id = "\\s\\[\\s*([0-9]+)\\]";
         String reg_player_name = "(\\w+)";
         String reg_player_rank = "\\[\\s*([0-9]+[kd]\\*)\\]";
-        String reg_game_info = "\\(\\s*([0-9]+)\\s*([0-9]+)\\s*([0-9]+)\\s*([0-9]+\\.*[0-9]*)\\s*([0-9]+)\\s*([ICPS])\\)";
+        String reg_game_info = "\\(\\s*([0-9]+)\\s*([0-9]+)\\s*([0-9]+)\\s*([-]?[0-9]+\\.*[0-9]*)\\s*([0-9]+)\\s*([ICPS])\\)";
         String reg_game_observing = "\\(\\s*([0-9]+)\\)";
-        Pattern p = Pattern.compile("[7]"+reg_games_id+"\\s*"+reg_player_name+"\\s*"+reg_player_rank+"\\s*vs\\.\\s*"+reg_player_name+"\\s*"+reg_player_rank+"\\s*"+reg_game_info+"\\s*"+reg_game_observing);
-        for(String game :results) {
-            //Log.e(TAG, "gameid = "+game.substring(game.indexOf('['), game.indexOf(']')));
-            //String other = game.substring(game.indexOf(']'), game.length());
-            //Log.e(TAG, "gameid = "+game.substring(game.indexOf('['), game.indexOf(']')));
-            Matcher m = p.matcher(game);  
-            if(m.matches()) {
+        Pattern p = Pattern.compile("[7]" + reg_games_id + "\\s*" + reg_player_name + "\\s*"
+                + reg_player_rank + "\\s*vs\\.\\s*" + reg_player_name + "\\s*" + reg_player_rank
+                + "\\s*" + reg_game_info + "\\s*" + reg_game_observing);
+        for (String game : results) {
+            // Log.e(TAG, "gameid = "+game.substring(game.indexOf('['),
+            // game.indexOf(']')));
+            // String other = game.substring(game.indexOf(']'), game.length());
+            // Log.e(TAG, "gameid = "+game.substring(game.indexOf('['),
+            // game.indexOf(']')));
+            Matcher m = p.matcher(game);
+            if (m.matches()) {
                 Game g = new Game();
                 g.setGame_id(Integer.valueOf(m.group(1)));
                 Player white = new Player();
@@ -274,37 +279,38 @@ public class IGSService extends Service implements MessageHandler {
                 g.setObserving(Integer.valueOf(m.group(12)));
                 games.add(g);
             }
-//            Log.e(TAG, "list size = "+games.size());
+            // Log.e(TAG, "list size = "+games.size());
         }
         return games;
     }
-    
-    public List<Player> getUsers(){
-        if(client!=null&&client.isConnected()) {
-            GetResponseAsync pwd = new GetResponseAsync(client,Commands.USER.getName(), 1000);
+
+    public List<Player> getUsers() {
+        if (client != null && client.isConnected()) {
+            GetResponseAsync pwd = new GetResponseAsync(client, Commands.USER.getName(), 1000);
             StringBuilder builder = new StringBuilder();
             try {
                 String result = pwd.execute().get();
-                if(result!=null&&result.length()>0){
+                if (result != null && result.length() > 0) {
                     builder.append(result);
-                    String end =builder.substring(builder.length()-4, builder.length());
+                    String end = builder.substring(builder.length() - 7, builder.length());
                     while (!end.endsWith(END_LINE)) {
                         // TODO 添加另一种结束符的判断
-                        GetResponseAsync get_result = new GetResponseAsync(client,"", 1000);
+                        GetResponseAsync get_result = new GetResponseAsync(client, "", 1000);
                         result = get_result.execute().get();
-                        if(result!=null&&result.length()>0){
+                        if (result != null && result.length() > 0) {
                             builder.append(result);
-                            end =builder.substring(builder.length()-7, builder.length());
-                        }else {
+                            end = builder.substring(builder.length() - 7, builder.length());
+                        } else {
                             return null;
                         }
-                        
+
                     }
-                    
+
                 }
                 result = builder.toString();
                 String users[] = result.split("\r\n");
-                parseUsersResult(users);
+                List<Player> users_list = parseUsersResult(users);
+                Log.e(TAG, "list size = "+users_list.size());
                 return null;
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -312,26 +318,69 @@ public class IGSService extends Service implements MessageHandler {
                 e.printStackTrace();
             }
             return null;
-        }else {
+        } else {
             return null;
         }
     }
-    
-    private List<Player> parseUsersResult(String[] results){
+
+    private int user_name_l = 10;
+    private int user_info_l = 14;
+    private int user_lang_l = 7;
+
+    private List<Player> parseUsersResult(String[] results) {
         List<Player> users = new ArrayList<Player>();
+
         String reg_guest_user = "^42\\s*guest[0-9]+.*";
-        String reg_user_name = "(\\w+)";
+        String reg_player_rank = "((NR)|([0-9]+[kd]\\*?))";
+        String reg_player_wl = "([0-9]+\\/\\s*[0-9]+)";
+        String reg_player_obs_pl = "(-|[0-9]+)";
+        String reg_player_Idle = "([0-9]+[smh])";
+        String reg_player_flag = "([QX-][-S!])";
+        String reg_player_language = "(\\w+)";
+        String reg_user = reg_player_rank + "\\s+" + reg_player_wl + "\\s+"
+                + reg_player_obs_pl + "\\s+" + reg_player_obs_pl + "\\s+" + reg_player_Idle
+                + "\\s+" + reg_player_flag + "\\s+" + reg_player_language + "\\s*";
         Pattern p = Pattern.compile(reg_guest_user);
-        
-        for(String user :results) {
-           if(p.matches(reg_guest_user, user)) {
-               Log.e(TAG, user);
-           }else {
-               
-           }
+        for (int i=1;i<results.length-2;i++) {
+            String user = results[i];
+            if (p.matches(reg_guest_user, user)) {
+                Log.e(TAG, user);
+                // TODO 解析游客
+            } else {
+                Player player = new Player();
+                try {
+                    byte[] player_byte = user.getBytes("Shift_JIS");
+                    player.setName(new String(player_byte, 2, 10));
+                    player.setInfo(new String(player_byte, 15, 14));
+                    player.setCountry(new String(player_byte, 24, 8));
+                    String new_user = new String(player_byte, 40, player_byte.length - 40);
+                    Pattern p_user = Pattern.compile(reg_user);
+                    Matcher matcher_user = p_user.matcher(new_user);
+                    if (matcher_user.matches()) {
+                        player.setRank(matcher_user.group(1));
+                        player.setWl(matcher_user.group(4));
+                        if (matcher_user.group(5).equals("-"))
+                            player.setObs(0);
+                        else {
+                            player.setObs(Integer.valueOf(matcher_user.group(5)));
+                        }
+                        if (matcher_user.group(6).equals("-"))
+                            player.setPl(0);
+                        else {
+                            player.setPl(Integer.valueOf(matcher_user.group(6)));
+                        }
+                        player.setIdle(matcher_user.group(7));
+                        player.setFlag(matcher_user.group(8));
+                        player.setLanguage(matcher_user.group(9));
+                    }
+                    users.add(player);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+
         }
         return users;
     }
-    
 
 }

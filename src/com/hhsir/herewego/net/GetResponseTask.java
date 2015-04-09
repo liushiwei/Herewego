@@ -62,7 +62,14 @@ public class GetResponseTask extends AsyncTask<Object, Void, String> {
                 Log.e("Telnet", "ret_read = " + total);
                 Log.e("Telnet", "getCharset = " + client.getCharset());
                 String res = new String(buff, 0, total,"Shift_JIS");
-                Log.i("readline", res);
+//                Log.i("readline", res);
+                if(len>2000)
+                    try {
+                        Thread.sleep(300);
+                    } catch (InterruptedException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
                 return res;
             }
 

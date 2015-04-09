@@ -48,10 +48,19 @@ public class ConsoleActivity extends Activity implements IGSServerListener {
         server_message.setTypeface(typeface);
         //startService(new Intent(this,IGSService.class));
         bindService(new Intent(this,IGSService.class), myLocalServiceConnection, Service.BIND_AUTO_CREATE);
-        String reg_guest_user = "^\\s*guest[0-9]+.*";
-        Pattern p = Pattern.compile(reg_guest_user);
-        if(p.matches(reg_guest_user, "  guest790                  --        NR    0/   0  79  -   50s    Q- default")) {
-            Log.e(TAG, "user is guest ");
+        String reg_guest_user = "^42\\s*guest[0-9]+.*";
+        String reg_player_rank = "((NR)|([0-9]+[kd]\\*?))";
+        String reg_player_wl = "([0-9]+\\/\\s*[0-9]+)";
+        String reg_player_obs_pl = "(-|[0-9]+)";
+        String reg_player_Idle = "([0-9]+[smh])";
+        String reg_player_flag = "([QX-][-S!])";
+        String reg_player_language = "(\\w+)";
+        String reg_user = reg_player_rank + "\\s+" + reg_player_wl + "\\s+"
+                + reg_player_obs_pl + "\\s+" + reg_player_obs_pl + "\\s+" + reg_player_Idle
+                + "\\s+" + reg_player_flag + "\\s+" + reg_player_language + "\\s*";
+        Pattern p = Pattern.compile(reg_user);
+        if(p.matches(reg_user, "NR    0/   0  -   -    2m    Q- default")) {
+            Log.e(TAG, "user is matches ");
         }
            
     }
