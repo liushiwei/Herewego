@@ -1,24 +1,19 @@
 
 package com.hhsir.herewego.net;
 
-import java.io.BufferedInputStream;
-import java.io.OutputStream;
-import java.io.IOException;
-import java.net.SocketException;
-import java.nio.charset.Charset;
+import android.app.Activity;
+import android.os.AsyncTask;
+
+import com.hhsir.herewego.util.Log;
 
 import org.apache.commons.net.telnet.TelnetClient;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.SocketException;
+import java.nio.charset.Charset;
 import java.util.Locale;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import android.app.Activity;
-import android.os.AsyncTask;
-import android.util.Log;
-
-import com.hhsir.herewego.ConsoleActivity;
 
 public class Telnet {
     private TelnetClient client = null;
@@ -91,7 +86,7 @@ public class Telnet {
             throw new SocketException("Connection error...");
         } catch (IOException ex) {
             handler.toastFast("Connection error...");
-            Log.e("Telnet", ex.toString());
+            Log.e(Telnet.class, ex.toString());
             throw new IOException("Connection error..."); // try next port
         }
 
@@ -112,7 +107,7 @@ public class Telnet {
         byte[] cmdbyte = stringBuilder.toString().getBytes();
 
         outstream = client.getOutputStream();
-        Log.i("command", (new String(cmdbyte, 0, cmdbyte.length)));
+        Log.i(Telnet.class, (new String(cmdbyte, 0, cmdbyte.length)));
 
         try {
             outstream.write(cmdbyte, 0, cmdbyte.length);

@@ -11,25 +11,19 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.SpannableString;
 import android.text.method.ScrollingMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.hhsir.herewego.net.Commands;
-import com.hhsir.herewego.net.GetResponseAsync;
 import com.hhsir.herewego.net.IGSServerListener;
 import com.hhsir.herewego.net.IGSService;
 import com.hhsir.herewego.net.IGSService.MyIBinder;
-import com.hhsir.herewego.net.Telnet;
+import com.hhsir.herewego.util.Log;
 
-import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ConsoleActivity extends Activity implements IGSServerListener {
-    private static final String TAG = "ConsoleActivity";
     private Toast fastToast;
     private static int SERVERPORT = 23;
     private static String SERVER_IP = "192.168.0.105";
@@ -51,7 +45,7 @@ public class ConsoleActivity extends Activity implements IGSServerListener {
         String reg_move = "^15\\s*([0-9]+)\\(([B|W])\\)\\:\\s(.*)";
         Pattern p = Pattern.compile(reg_move);
         if(p.matches(reg_move, "15  11(W): H15")) {
-            Log.e(TAG, "user is matches ");
+            Log.i(ConsoleActivity.class, "user is matches ");
         }
            
     }

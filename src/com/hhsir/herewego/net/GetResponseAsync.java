@@ -31,7 +31,6 @@ public class GetResponseAsync extends AsyncTask<Void, Void, String> {
 
         try {
             result = response.get(timeout, TimeUnit.MILLISECONDS);
-            //Log.e("GetResponseAsync", result);
             client.getMessageHandler().setMessage(result);
         } catch (InterruptedException | ExecutionException
                 | TimeoutException e) {
@@ -42,9 +41,6 @@ public class GetResponseAsync extends AsyncTask<Void, Void, String> {
         if (result == null) {
             return "";
         }
-//        mHandler.obtainMessage(0, result).sendToTarget();
-//        result = result.replace("\r\n", "");
-//        result = result.replace(" ", "");
 
         return result;
     }

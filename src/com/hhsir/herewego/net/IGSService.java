@@ -7,13 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.hhsir.herewego.igs.Game;
 import com.hhsir.herewego.igs.Moves;
 import com.hhsir.herewego.igs.Parser;
 import com.hhsir.herewego.igs.Player;
+import com.hhsir.herewego.util.Log;
 
 import java.io.IOException;
 import java.util.List;
@@ -269,7 +269,7 @@ public class IGSService extends Service implements MessageHandler {
                 result = builder.toString();
                 String users[] = result.split("\r\n");
                 List<Player> users_list = mParser.parseUsersResult(users);
-                Log.e(TAG, "list size = "+users_list.size());
+                Log.e(IGSService.class, "list size = "+users_list.size());
                 return null;
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -314,7 +314,7 @@ public class IGSService extends Service implements MessageHandler {
                 result = builder.toString();
                 String moves[] = result.split("\r\n");
                 List<Moves> moves_list = mParser.parseMoves(moves);
-                Log.e(TAG, "list size = "+moves_list.size());
+                Log.e(IGSService.class, "list size = "+moves_list.size());
                 return null;
             } catch (InterruptedException e) {
                 e.printStackTrace();

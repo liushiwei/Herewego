@@ -1,16 +1,12 @@
 
 package com.hhsir.herewego.net;
 
+import android.os.AsyncTask;
+
+import com.hhsir.herewego.util.Log;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import android.R.integer;
-import android.app.Activity;
-import android.os.AsyncTask;
-import android.util.Log;
 
 public class GetResponseTask extends AsyncTask<Object, Void, String> {
 
@@ -39,7 +35,7 @@ public class GetResponseTask extends AsyncTask<Object, Void, String> {
             while (len == 0) {
                 try {
                     // Need to implement listener ASAP
-                    Log.e("Telnet", "sleep = " + 300);
+                    Log.i(GetResponseTask.class, "sleep = " + 300);
                     sleep_time+=300;
                     Thread.sleep(300);
                     if(sleep_time>2500){
@@ -51,7 +47,7 @@ public class GetResponseTask extends AsyncTask<Object, Void, String> {
                 }
                 len = instr.available();
             }
-            Log.e("Telnet", "len = " + len);
+            Log.e(GetResponseTask.class, "len = " + len);
             if (len > 0) {
                 byte[] buff = new byte[len];
                 int total = 0;
@@ -59,10 +55,10 @@ public class GetResponseTask extends AsyncTask<Object, Void, String> {
                     total += instr.read(buff, total, len);
                 } while (total != len);
 
-                Log.e("Telnet", "ret_read = " + total);
-                Log.e("Telnet", "getCharset = " + client.getCharset());
+                Log.i(GetResponseTask.class, "ret_read = " + total);
+                Log.i(GetResponseTask.class, "getCharset = " + client.getCharset());
                 String res = new String(buff, 0, total,"Shift_JIS");
-//                Log.i("readline", res);
+                Log.i(GetResponseTask.class, res);
                 if(len>2000)
                     try {
                         Thread.sleep(300);
