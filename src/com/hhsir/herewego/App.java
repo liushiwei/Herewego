@@ -52,7 +52,7 @@ public class App extends Application {
 
     public static GoGame getGame() {
         if (game == null) {
-            game = new GoGame((byte) 9);
+            game = new GoGame((byte) 19);
         }
         return game;
     }

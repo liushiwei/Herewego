@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal"
+    android:background="@drawable/shinkaya" >
+
+    <com.hhsir.herewego.board.GoBoardViewHD
+        android:id="@+id/go_board"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <FrameLayout
+            android:id="@+id/game_extra_container"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+
+        <com.hhsir.herewego.board.ZoomingGoBoardViewHD
+            android:id="@+id/zoom_board"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:visibility="gone" />
+    </FrameLayout>
+
+</LinearLayout>

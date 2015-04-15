@@ -267,7 +267,7 @@ public class GoBoardViewHD extends View {
 
         for (BoardCell cell : board.getAllCells()) {
             if (getGame().isCellHoschi(cell)) {
-                drawBoardCircle(canvas, cell.x, cell.y, 2f + stone_size / 10, hoshi_paint);
+                drawBoardCircle(canvas, cell.x, cell.y, 2f + stone_size / 15, hoshi_paint);
             }
 
             // paint the territory with alpha opaque stones
