@@ -356,7 +356,7 @@ public class GoBoardViewHD extends View {
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        setSize(w, h);
+        setSize(w-5, h-5);
     }
 
     private void setSize(int w, int h) {
