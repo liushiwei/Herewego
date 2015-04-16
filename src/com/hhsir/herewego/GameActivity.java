@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.widget.Toast;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -20,6 +19,7 @@ import com.hhsir.herewego.board.GoSoundManager;
 import com.hhsir.herewego.logic.Cell;
 import com.hhsir.herewego.logic.GoGame;
 import com.hhsir.herewego.util.Log;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
 public class GameActivity extends Activity implements OnTouchListener, OnKeyListener,
         GoGame.GoGameChangeListener {
@@ -59,6 +59,21 @@ public class GameActivity extends Activity implements OnTouchListener, OnKeyList
         createInfoToast();
 
         game2ui();
+        SlidingMenu menu = new SlidingMenu(this);
+        menu.setMode(SlidingMenu.LEFT);//设置左右滑菜单  
+        menu.setTouchModeAbove(SlidingMenu.LEFT);//设置要使菜单滑动，触碰屏幕的范围  
+        menu.setShadowWidthRes(R.dimen.shadow_width);
+        menu.setShadowDrawable(R.drawable.shadow);
+        menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        menu.setFadeDegree(0.35f);
+        menu.attachToActivity(this, SlidingMenu.LEFT);
+        menu.setMenu(R.layout.menu);
+        menu.toggle();//动态判断自动关闭或开启SlidingMenu  
+        menu.setOnOpenedListener(new SlidingMenu.OnOpenedListener() {  
+                    public void onOpened() {  
+                          
+                    }  
+                });  
     }
 
     @SuppressLint("ShowToast")
