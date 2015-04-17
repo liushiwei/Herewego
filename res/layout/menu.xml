@@ -3,15 +3,16 @@
     android:layout_width="150dp"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+	<TextView android:id="@+id/username" android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Button" />
 
     <Button
-        android:id="@+id/button2"
+        android:id="@+id/showusers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Button" />

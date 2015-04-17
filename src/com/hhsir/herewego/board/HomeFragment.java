@@ -1,41 +1,41 @@
 
-package com.hhsir.herewego;
+package com.hhsir.herewego.board;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
-import android.widget.ImageButton;
 import android.widget.Toast;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-import com.hhsir.herewego.board.GoBoardViewHD;
-import com.hhsir.herewego.board.GoSoundManager;
+import com.hhsir.herewego.App;
+import com.hhsir.herewego.GameActivity;
+import com.hhsir.herewego.InteractionScope;
+import com.hhsir.herewego.R;
 import com.hhsir.herewego.logic.Cell;
 import com.hhsir.herewego.logic.GoGame;
 import com.hhsir.herewego.util.Log;
 import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
-public class GameActivity extends Activity implements OnTouchListener, OnKeyListener,
-        GoGame.GoGameChangeListener {
-
+@SuppressLint("NewApi")
+public class HomeFragment extends Fragment implements OnTouchListener, OnKeyListener,
+GoGame.GoGameChangeListener {
     public GoSoundManager sound_man;
 
-    @InjectView(R.id.go_board)
     GoBoardViewHD go_board = null;
 
-    @InjectView(R.id.zoom_board)
     GoBoardViewHD zoom_board = null;
 
-    @InjectView(R.id.game_extra_container)
     View gameExtrasContainer;
 
     private int last_processed_move_change_num = 0;
@@ -44,66 +44,32 @@ public class GameActivity extends Activity implements OnTouchListener, OnKeyList
     private Toast info_toast = null;
     
     private SlidingMenu menu;
+    public HomeFragment() {
+        
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.game);
-        ButterKnife.inject(this);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        Log.i(HomeFragment.class, "oncreateview");
+        View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+        go_board = (GoBoardViewHD) rootView.findViewById(R.id.go_board);
+        zoom_board = (GoBoardViewHD) rootView.findViewById(R.id.zoom_board);
+        gameExtrasContainer = rootView.findViewById(R.id.game_extra_container);
+        ButterKnife.inject(getActivity());
 
         interaction_scope = App.getInteractionScope();
         if (getGame() == null) { // cannot do anything without a game
-            Log.w(GameActivity.class, "finish()ing " + this + " cuz getGame()==null");
-            finish();
-            return;
+            Log.w(HomeFragment.class, "finish()ing " + this + " cuz getGame()==null");
+            getActivity().finish();
         }
         if (sound_man == null) {
-            sound_man = new GoSoundManager(this);
+            sound_man = new GoSoundManager(getActivity());
         }
         setupBoard();
         createInfoToast();
 
         game2ui();
-        setUpSlidingMenu();
-    }
-    
-    private void setUpSlidingMenu() {
-        menu = new SlidingMenu(this);
-        menu.setMode(SlidingMenu.LEFT);//设置左右滑菜单  
-        menu.setTouchModeAbove(SlidingMenu.LEFT);//设置要使菜单滑动，触碰屏幕的范围  
-        menu.setShadowWidthRes(R.dimen.shadow_width);
-        menu.setShadowDrawable(R.drawable.shadow);
-        menu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-        menu.setFadeDegree(0.35f);
-        menu.attachToActivity(this, SlidingMenu.LEFT);
-        menu.setMenu(R.layout.menu);
-        menu.setBehindWidthRes(R.dimen.menu_width);//设置SlidingMenu菜单的宽度  
-//        menu.toggle();//动态判断自动关闭或开启SlidingMenu  
-        menu.setOnOpenedListener(new SlidingMenu.OnOpenedListener() {  
-                    public void onOpened() {  
-                          
-                    }  
-                });  
-        ImageButton btn = (ImageButton) findViewById(R.id.slidingmenu);
-        btn.setOnClickListener(new OnClickListener() {
-            
-            public void onClick(View v) {
-                // TODO Auto-generated method stub
-                menu.toggle();
-            }
-        });
-    }
-
-    @SuppressLint("ShowToast")
-    // this is correct - we do not want to show the toast at this stage
-    private void createInfoToast() {
-        info_toast = Toast.makeText(this.getBaseContext(), "", Toast.LENGTH_LONG);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
         go_board.setFocusableInTouchMode(true);
         go_board.setFocusable(true);
         go_board.requestFocus();
@@ -114,7 +80,25 @@ public class GameActivity extends Activity implements OnTouchListener, OnKeyList
         } else {
             getGame().addGoGameChangeListener(this);
         }
+        return rootView;
     }
+    
+
+    @SuppressLint("ShowToast")
+    // this is correct - we do not want to show the toast at this stage
+    private void createInfoToast() {
+        info_toast = Toast.makeText(getActivity(), "", Toast.LENGTH_LONG);
+    }
+
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        Log.i(HomeFragment.class, "onAttach");
+        
+    }
+    
+    
 
     public GoGame getGame() {
         return App.getGame();
@@ -293,5 +277,4 @@ public class GameActivity extends Activity implements OnTouchListener, OnKeyList
         // }).show();
         // }
     }
-
 }

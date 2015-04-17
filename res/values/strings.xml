@@ -247,5 +247,8 @@
     <string name="letter">letter</string>
     <string name="handicap_only_for">Handicap only for 9x9 / 13x13 / 19x19</string>
     <string name="dra_rate_app">Like it? Rate it!</string>
+    <string name="search">搜索</string>
+    <string name="sliding_title">SlidingMenu Demo</string>
+    <string name="desc_list_item_icon">SlidingMenu</string>
 
 </resources>

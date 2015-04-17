@@ -2,14 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="@drawable/shinkaya"
-    android:orientation="horizontal" >
-
-    <ImageButton
-        android:id="@+id/slidingmenu"
-        android:layout_width="20dp"
-        android:layout_height="fill_parent"
-        android:src="@drawable/indicator" />
+    android:orientation="horizontal"
+    android:background="@drawable/shinkaya" >
 
     <com.hhsir.herewego.board.GoBoardViewHD
         android:id="@+id/go_board"
