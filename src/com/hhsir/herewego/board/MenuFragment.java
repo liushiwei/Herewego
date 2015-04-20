@@ -82,9 +82,9 @@ public class MenuFragment extends Fragment implements OnItemClickListener {
         // Pages  
         mNavDrawerItems.add(new NavDrawerItem(mNavMenuTitles[4], mNavMenuIconsTypeArray  
                 .getResourceId(4, -1)));  
-        // What's hot, We will add a counter here  
-        mNavDrawerItems.add(new NavDrawerItem(mNavMenuTitles[5], mNavMenuIconsTypeArray  
-                .getResourceId(5, -1), true, "50+"));  
+//        // What's hot, We will add a counter here  
+//        mNavDrawerItems.add(new NavDrawerItem(mNavMenuTitles[5], mNavMenuIconsTypeArray  
+//                .getResourceId(5, -1), true, "50+"));  
   
         // Recycle the typed array  
         mNavMenuIconsTypeArray.recycle();  

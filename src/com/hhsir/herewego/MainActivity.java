@@ -71,12 +71,12 @@ public class MainActivity extends SlidingActivity implements SLMenuListOnItemCli
         int mCurrentOrientation = getResources().getConfiguration().orientation;
 
         if (mCurrentOrientation == Configuration.ORIENTATION_PORTRAIT) {
-//            getActionBar().show();
-//            getActionBar().setDisplayHomeAsUpEnabled(true);
+            getActionBar().show();
+            getActionBar().setDisplayHomeAsUpEnabled(true);
             findViewById(R.id.slidingmenu).setVisibility(View.GONE);
 
         } else if (mCurrentOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            getActionBar().hide();
+            getActionBar().hide();
             ImageButton btn = (ImageButton) findViewById(R.id.slidingmenu);
             btn.setOnClickListener(new OnClickListener() {
                 
@@ -158,12 +158,12 @@ public class MainActivity extends SlidingActivity implements SLMenuListOnItemCli
         // Configuration.ORIENTATION_LANDSCAPE 表示横屏
         if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             Toast.makeText(MainActivity.this, "现在是竖屏", Toast.LENGTH_SHORT).show();
-//            getActionBar().show();
+            getActionBar().show();
             findViewById(R.id.slidingmenu).setVisibility(View.GONE);
         }
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             Toast.makeText(MainActivity.this, "现在是横屏", Toast.LENGTH_SHORT).show();
-//            getActionBar().hide();
+            getActionBar().hide();
             ImageButton btn = (ImageButton) findViewById(R.id.slidingmenu);
             btn.setOnClickListener(new OnClickListener() {
                 

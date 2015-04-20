@@ -2,12 +2,11 @@
 <resources>
     <!-- Nav Drawer Menu Items -->
     <string-array name="nav_drawer_items">
-        <item >Home</item>
-        <item >Find People</item>
-        <item >Photos</item>
-        <item >Communities</item>
-        <item >Pages</item>
-        <item >What\'s Hot</item>
+        <item >对弈</item>
+        <item >用户</item>
+        <item >对局</item>
+        <item >登录</item>
+        <item >设置</item>
     </string-array>
     
     <!-- Nav Drawer List Item Icons -->
@@ -18,6 +17,5 @@
         <item>@drawable/ic_photos</item>
         <item>@drawable/ic_communities</item>
         <item>@drawable/ic_pages</item>
-        <item>@drawable/ic_whats_hot</item>
     </array>
 </resources>
