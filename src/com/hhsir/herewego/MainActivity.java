@@ -15,7 +15,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
-import com.hhsir.herewego.board.CommunityFragment;
+import com.hhsir.herewego.board.LoginFragment;
 import com.hhsir.herewego.board.FindPeopleFragment;
 import com.hhsir.herewego.board.HomeFragment;
 import com.hhsir.herewego.board.MenuFragment;
@@ -125,7 +125,7 @@ public class MainActivity extends SlidingActivity implements SLMenuListOnItemCli
                 fragment = new PhotosFragment();
                 break;
             case 3:
-                fragment = new CommunityFragment();
+                fragment = new LoginFragment();
                 break;
             case 4:
                 fragment = new PagesFragment();

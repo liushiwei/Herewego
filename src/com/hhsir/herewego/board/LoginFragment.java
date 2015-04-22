@@ -10,15 +10,15 @@ import android.view.ViewGroup;
 import com.hhsir.herewego.R;
 
 @SuppressLint("NewApi")
-public class CommunityFragment extends Fragment {
+public class LoginFragment extends Fragment {
 	
-	public CommunityFragment(){}
+	public LoginFragment(){}
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
  
-        View rootView = inflater.inflate(R.layout.fragment_community, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_login, container, false);
          
         return rootView;
     }
